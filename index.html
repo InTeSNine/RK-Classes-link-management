@@ -1,0 +1,395 @@
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لیست کلاس‌ها</title>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font/dist/font-face.css" rel="stylesheet" type="text/css">
+    <style>
+        body {
+            font-family: 'Vazir', sans-serif;
+            background: #1c1c1c;
+            color: white;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            padding-right: 0;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 20px;
+            background-color: #333;
+            color: white;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 24px;
+            padding-left: 20px;
+            padding-right: 20px;
+            margin-right: 20px;
+        }
+
+        .add-class-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 20px;
+        }
+
+        .add-class-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+            width: 100%;
+            padding: 20px;
+            margin-top: 20px;
+            gap: 20px;
+            padding-left: 40px;
+            padding-right: 40px;
+            box-sizing: border-box;
+        }
+
+        .card {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #2e2e2e;
+            border: 1px solid #444;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 300px;
+            min-height: 180px;
+            color: white;
+            font-size: 16px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-info {
+            flex: 2;
+        }
+
+        .card-buttons {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        /* دکمه‌ها */
+        .card-buttons .btn {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: transparent;
+            background-color: #555;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            border: none;
+            position: relative;
+        }
+
+        .card-buttons .btn:hover {
+            background-color: #333;
+        }
+
+        /* دکمه حذف */
+        .card-buttons .remove-btn {
+            background-color: #dc3545;
+        }
+
+        /* دکمه ویرایش */
+        .card-buttons .edit-btn {
+            background-color: #ffc107;
+        }
+
+        /* دکمه ورود */
+        .card-buttons .restore-btn {
+            background-color: #2daf29;
+        }
+
+        .form-container {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #2e2e2e;
+            border: 1px solid #444;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            z-index: 200;
+            gap: 15px;
+        }
+
+        .form-container input,
+        .form-container select,
+        .form-container textarea {
+            background-color: #444;
+            color: white;
+            border: 1px solid #555;
+            border-radius: 5px;
+            padding: 10px;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        .form-container input[type="time"],
+        .form-container select {
+            border: 1px dashed #555;
+            border-radius: 5px;
+            padding: 15px;
+            background-color: #444;
+            color: white;
+            width: 48%;
+            margin: 5px;
+        }
+
+        .form-container select {
+            width: 100%;
+        }
+
+        .form-container button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .form-container button:hover {
+            background-color: #218838;
+        }
+
+        .form-container .cancel-btn {
+            background-color: #dc3545;
+        }
+
+        .form-container .cancel-btn:hover {
+            background-color: #c82333;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 150;
+        }
+
+        .no-classes-message {
+            color: white;
+            font-size: 20px;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .card-buttons .btn:hover,
+        .form-container .cancel-btn:hover,
+        .form-container button:hover,
+        .card:hover,
+        .add-class-btn:hover {
+            background-color: #333;
+            cursor: pointer;
+        }
+
+        .touch-device .card-buttons .btn:hover,
+        .touch-device .form-container .cancel-btn:hover,
+        .touch-device .form-container button:hover,
+        .touch-device .card:hover,
+        .touch-device .add-class-btn:hover {
+            background-color: unset;
+            cursor: default;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="top-bar">
+        <h1 class="header-title">لیست کلاس‌ها</h1>
+        <button class="add-class-btn" onclick="toggleForm()">افزودن کلاس</button>
+    </div>
+    <div class="overlay" id="overlay" onclick="toggleForm()"></div>
+    <div class="form-container" id="formContainer">
+        <input type="text" id="className" placeholder="نام کلاس" />
+        <input type="url" id="classLink" placeholder="لینک کلاس" />
+        <select id="classDay">
+            <option value="" disabled selected>انتخاب روز هفته</option>
+            <option value="شنبه">شنبه</option>
+            <option value="یکشنبه">یکشنبه</option>
+            <option value="دوشنبه">دوشنبه</option>
+            <option value="سه‌شنبه">سه‌شنبه</option>
+            <option value="چهارشنبه">چهارشنبه</option>
+            <option value="پنج‌شنبه">پنج‌شنبه</option>
+            <option value="جمعه">جمعه</option>
+        </select>
+        <div>
+            <label for="classStartTime">از</label>
+            <input type="time" id="classStartTime" value="12:00" />
+            <br />
+            <label for="classEndTime">تا</label>
+            <input type="time" id="classEndTime" value="12:00" />
+        </div>
+        <button id="submitBtn" onclick="addOrUpdateClass()">اضافه کردن کلاس</button>
+        <button class="cancel-btn" onclick="toggleForm()">لغو</button>
+    </div>
+    <div class="main-content" id="classContainer"></div>
+    <div id="noClassesMessage" class="no-classes-message" style="display: none;">
+        هیچ کلاسی وجود ندارد. لطفا کلاس‌های خود را اضافه کنید.
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if ('ontouchstart' in window || navigator.maxTouchPoints) {
+                document.body.classList.add('touch-device');
+            }
+        });
+
+
+        const daysOrder = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه'];
+        let classes = JSON.parse(localStorage.getItem('classes')) || [];
+        let currentEditingIndex = null;
+
+        function toggleForm() {
+            const overlay = document.getElementById('overlay');
+            const formContainer = document.getElementById('formContainer');
+            const isFormVisible = formContainer.style.display === 'flex';
+            overlay.style.display = isFormVisible ? 'none' : 'block';
+            formContainer.style.display = isFormVisible ? 'none' : 'flex';
+            resetForm();
+        }
+
+        function displayClasses() {
+            const classContainer = document.getElementById('classContainer');
+            classContainer.innerHTML = '';
+            if (classes.length === 0) {
+                document.getElementById('noClassesMessage').style.display = 'block';
+            } else {
+                document.getElementById('noClassesMessage').style.display = 'none';
+                classes.forEach((cls, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `
+                        <div class="card-info">
+                            <h2>${cls.name}</h2>
+                            <p>روز: ${cls.day}</p>
+                            <p>زمان: ${cls.time}</p>
+                        </div>
+                        <div class="card-buttons">
+                            <button class="btn restore-btn" onclick="window.location.href='${cls.link}'">
+                                <span>ورود</span>
+                            </button>
+                            <button class="btn edit-btn" onclick="editClass(${index})">
+                                <span>ویرایش</span>
+                            </button>
+                            <button class="btn remove-btn" onclick="removeClass(${index})">
+                                <span>حذف</span>
+                            </button>
+                        </div>
+                    `;
+                    classContainer.appendChild(card);
+                });
+            }
+        }
+
+
+        function addOrUpdateClass() {
+            const name = document.getElementById('className').value.trim();
+            const link = document.getElementById('classLink').value.trim();
+            const day = document.getElementById('classDay').value;
+            const startTime = document.getElementById('classStartTime').value;
+            const endTime = document.getElementById('classEndTime').value;
+
+            if (!name || !link || !day || !startTime || !endTime) return;
+
+            if (currentEditingIndex !== null) {
+                // ویرایش کلاس
+                classes[currentEditingIndex] = { name, link, day, time: `${startTime} - ${endTime}` };
+                currentEditingIndex = null;  // Reset edit state
+                document.getElementById('submitBtn').textContent = 'اضافه کردن کلاس';
+            } else {
+                // اضافه کردن کلاس جدید
+                classes.push({ name, link, day, time: `${startTime} - ${endTime}` });
+            }
+
+            localStorage.setItem('classes', JSON.stringify(classes));
+            toggleForm();
+            displayClasses();
+        }
+
+        function removeClass(index) {
+            if (confirm('آیا از حذف کلاس مطمئن هستید؟')) {
+                classes.splice(index, 1);
+                localStorage.setItem('classes', JSON.stringify(classes));
+                displayClasses();
+            }
+        }
+
+        function editClass(index) {
+            const cls = classes[index];
+            document.getElementById('className').value = cls.name;
+            document.getElementById('classLink').value = cls.link;
+            document.getElementById('classDay').value = cls.day;
+            const [startTime, endTime] = cls.time.split(' - ');
+            document.getElementById('classStartTime').value = startTime;
+            document.getElementById('classEndTime').value = endTime;
+            currentEditingIndex = index;
+            document.getElementById('submitBtn').textContent = 'ثبت تغییرات';
+            toggleForm();
+        }
+
+        function resetForm() {
+            document.getElementById('className').value = '';
+            document.getElementById('classLink').value = '';
+            document.getElementById('classDay').value = '';
+            document.getElementById('classStartTime').value = '12:00';
+            document.getElementById('classEndTime').value = '12:00';
+        }
+
+        displayClasses();
+    </script>
+</body>
