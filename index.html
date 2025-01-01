@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 
@@ -9,6 +8,72 @@
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font/dist/font-face.css" rel="stylesheet" type="text/css">
     <link rel="icon" href="icon.png" type="image/png">
     <style>
+        .creator {
+            font-size: 14px;
+            font-family: 'Vazir', sans-serif;
+            color: #e4e4e4;
+            text-align: center;
+            margin-top: 20px;
+            padding: 5px;
+            /* background-color: rgba(0, 0, 0, 0.5); */
+            border-radius: 5px;
+            width: auto;
+        }
+
+        @media (max-width: 768px) {
+            .creator {
+                font-size: 12px;
+                margin-top: 10px;
+            }
+        }
+
+        .guide-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .guide-content {
+            background-color: #2e2e2e;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            width: 60%;
+            color: white;
+            font-size: 18px;
+        }
+
+        .guide-content h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .guide-content p {
+            margin-bottom: 20px;
+        }
+
+        .guide-content button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .guide-content button:hover {
+            background-color: #218838;
+        }
+
         body {
             font-family: 'Vazir', sans-serif;
             background: #1c1c1c;
@@ -108,7 +173,6 @@
             right: 10px;
         }
 
-        /* دکمه‌ها */
         .card-buttons .btn {
             width: 18px;
             height: 18px;
@@ -128,17 +192,14 @@
             background-color: #333;
         }
 
-        /* دکمه حذف */
         .card-buttons .remove-btn {
             background-color: #dc3545;
         }
 
-        /* دکمه ویرایش */
         .card-buttons .edit-btn {
             background-color: #ffc107;
         }
 
-        /* دکمه ورود */
         .card-buttons .restore-btn {
             background-color: #2daf29;
         }
@@ -175,12 +236,12 @@
 
         .form-container input[type="time"],
         .form-container select {
-            border: 1px dashed #555;
+            border: 1px ;
             border-radius: 5px;
-            padding: 15px;
+            padding: 25px;
             background-color: #444;
             color: white;
-            width: 48%;
+            width: 60%;
             margin: 5px;
         }
 
@@ -254,6 +315,20 @@
         <h1 class="header-title">لیست کلاس‌ها</h1>
         <button class="add-class-btn" onclick="toggleForm()">افزودن کلاس</button>
     </div>
+    <div id="guideModal" class="guide-modal">
+        <div class="guide-content">
+            <h2>خوش آمدید!</h2>
+            <p>این صفحه برای مدیریت و مشاهده کلاس‌های شما طراحی شده است.برای شروع، کلاس‌های خود را اضافه کنید و از امکانات مختلف استفاده کنید.</p>
+            <p>هر کلاس یک یا چند کارت دارد و هر کارت سه دکمه دارد:</p>
+            <p>سبز: برای ورود به کلاس</p>
+            <p>زرد: برای ویرایش کارت</p>
+            <p>قرمز: برای حذف کارت</p>
+            <div class="creator">MoSaRa</div>
+            <br/>
+
+            <button onclick="closeGuide()">متوجه شدم</button>
+        </div>
+    </div>
     <div class="overlay" id="overlay" onclick="toggleForm()"></div>
     <div class="form-container" id="formContainer">
         <input type="text" id="className" placeholder="نام کلاس" />
@@ -285,11 +360,17 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            if ('ontouchstart' in window || navigator.maxTouchPoints) {
-                document.body.classList.add('touch-device');
+            const guideModal = document.getElementById('guideModal');
+            if (!localStorage.getItem('guideShown')) {
+                guideModal.style.display = 'flex';
+                localStorage.setItem('guideShown', 'true');
             }
         });
 
+        function closeGuide() {
+            const guideModal = document.getElementById('guideModal');
+            guideModal.style.display = 'none';
+        }
 
         const daysOrder = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه'];
         let classes = JSON.parse(localStorage.getItem('classes')) || [];
@@ -321,15 +402,9 @@
                             <p>زمان: ${cls.time}</p>
                         </div>
                         <div class="card-buttons">
-                            <button class="btn restore-btn" onclick="window.location.href='${cls.link}'">
-                                <span>ورود</span>
-                            </button>
-                            <button class="btn edit-btn" onclick="editClass(${index})">
-                                <span>ویرایش</span>
-                            </button>
-                            <button class="btn remove-btn" onclick="removeClass(${index})">
-                                <span>حذف</span>
-                            </button>
+                            <button class="btn restore-btn" onclick="window.location.href = '${cls.link}'"></button>
+                            <button class="btn edit-btn" onclick="editClass(${index})"></button>
+                            <button class="btn remove-btn" onclick="removeClass(${index})"></button>
                         </div>
                     `;
                     classContainer.appendChild(card);
@@ -337,40 +412,47 @@
             }
         }
 
+        function resetForm() {
+            document.getElementById('className').value = '';
+            document.getElementById('classLink').value = '';
+            document.getElementById('classDay').selectedIndex = 0;
+            document.getElementById('classStartTime').value = '12:00';
+            document.getElementById('classEndTime').value = '12:00';
+            document.getElementById('submitBtn').innerText = 'افزودن کلاس';
+        }
 
         function addOrUpdateClass() {
-            const name = document.getElementById('className').value.trim();
-            const link = document.getElementById('classLink').value.trim();
+            const name = document.getElementById('className').value;
+            const link = document.getElementById('classLink').value;
             const day = document.getElementById('classDay').value;
             const startTime = document.getElementById('classStartTime').value;
             const endTime = document.getElementById('classEndTime').value;
 
-            if (!name || !link || !day || !startTime || !endTime) return;
+            if (!name || !link || !day || !startTime || !endTime) {
+                return;
+            }
 
-            if (currentEditingIndex !== null) {
-                // ویرایش کلاس
-                classes[currentEditingIndex] = { name, link, day, time: `${startTime} - ${endTime}` };
-                currentEditingIndex = null;  // Reset edit state
-                document.getElementById('submitBtn').textContent = 'اضافه کردن کلاس';
+            const newClass = {
+                name: name,
+                link: link,
+                day: day,
+                time: `${startTime} - ${endTime}`,
+            };
+
+            if (currentEditingIndex === null) {
+                classes.push(newClass);
             } else {
-                // اضافه کردن کلاس جدید
-                classes.push({ name, link, day, time: `${startTime} - ${endTime}` });
+                classes[currentEditingIndex] = newClass;
+                currentEditingIndex = null;
             }
 
             localStorage.setItem('classes', JSON.stringify(classes));
-            toggleForm();
             displayClasses();
-        }
-
-        function removeClass(index) {
-            if (confirm('آیا از حذف کلاس مطمئن هستید؟')) {
-                classes.splice(index, 1);
-                localStorage.setItem('classes', JSON.stringify(classes));
-                displayClasses();
-            }
+            toggleForm();
         }
 
         function editClass(index) {
+            currentEditingIndex = index;
             const cls = classes[index];
             document.getElementById('className').value = cls.name;
             document.getElementById('classLink').value = cls.link;
@@ -378,19 +460,18 @@
             const [startTime, endTime] = cls.time.split(' - ');
             document.getElementById('classStartTime').value = startTime;
             document.getElementById('classEndTime').value = endTime;
-            currentEditingIndex = index;
-            document.getElementById('submitBtn').textContent = 'ثبت تغییرات';
             toggleForm();
+            document.getElementById('submitBtn').innerText = 'ویرایش کلاس';
         }
 
-        function resetForm() {
-            document.getElementById('className').value = '';
-            document.getElementById('classLink').value = '';
-            document.getElementById('classDay').value = '';
-            document.getElementById('classStartTime').value = '12:00';
-            document.getElementById('classEndTime').value = '12:00';
+        function removeClass(index) {
+            classes.splice(index, 1);
+            localStorage.setItem('classes', JSON.stringify(classes));
+            displayClasses();
         }
 
         displayClasses();
     </script>
 </body>
+
+</html>
