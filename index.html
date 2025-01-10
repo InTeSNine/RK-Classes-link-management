@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لیست کلاس‌ها</title>
+    <title>Bookmarks</title>
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font/dist/font-face.css" rel="stylesheet" type="text/css">
     <link rel="icon" href="icon.png" type="image/png">
     <style>
@@ -336,6 +336,31 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const guideModal = document.getElementById('guideModal');
+
+            if (!localStorage.getItem('guideShown')) {
+                guideModal.style.display = 'flex';
+                localStorage.setItem('guideShown', 'true');
+            }
+
+            if (!localStorage.getItem('defaultBookmarksAdded')) {
+                const defaultBookmarks = [
+                    { name: 'ChatGPT', link: 'https://chatgpt.com/' },
+                    { name: 'YouTube', link: 'https://www.youtube.com/' },
+                    { name: 'LinkedIn', link: 'https://www.linkedin.com/' },
+                ];
+
+                classes = classes.concat(defaultBookmarks);
+
+                localStorage.setItem('classes', JSON.stringify(classes));
+
+                localStorage.setItem('defaultBookmarksAdded', 'true');
+            }
+
+            displayClasses(); 
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const guideModal = document.getElementById('guideModal');
             if (!localStorage.getItem('guideShown')) {
                 guideModal.style.display = 'flex';
                 localStorage.setItem('guideShown', 'true');
@@ -370,6 +395,7 @@
                 classes.forEach((cls, index) => {
                     const card = document.createElement('div');
                     card.className = 'card';
+                    // card.onclick = () => window.location.href = cls.link;
                     card.innerHTML = `
                         <div class="card-info">
                             <h2>${cls.name}</h2>
